@@ -2,7 +2,7 @@ parameters:
   RuleAppName: 'UNSET'
 
 jobs:
-- job: Test
+- job: Test_${{ parameters.RuleAppName }}
   pool:
     vmImage: 'windows-2019'
   variables:
@@ -25,7 +25,7 @@ jobs:
       for %%i in ("$(RuleFolder)\*.testsuite") do ( .\ExecuteTests.exe -RuleAppPath:"$(RuleAppLocation)" -TestSuitePath:"%%i" )
     displayName: 'Run Tests on $(RuleAppName) Rule App'
     workingDirectory: $(Agent.TempDirectory)
-- job: Package
+- job: Package_${{ parameters.RuleAppName }}
   dependsOn: Test
   pool:
     vmImage: 'windows-2019'
