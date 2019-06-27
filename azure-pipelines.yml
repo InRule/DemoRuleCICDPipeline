@@ -9,4 +9,4 @@ trigger:
 jobs:
 - template: azure-pipeline-TestAndBuild.yml  # Template reference
   parameters:
-    ruleName: MultiplicationApp
+    RuleAppName: MultiplicationApp

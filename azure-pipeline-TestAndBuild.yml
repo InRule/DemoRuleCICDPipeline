@@ -1,18 +1,13 @@
 parameters:
-  ruleName: ''
-
-variables:
-  RuleAppName: ${{ parameters.ruleName }}
-  RuleFolder: $(System.DefaultWorkingDirectory)\RuleApps\$(RuleAppName)
-  RuleAppLocation: $(System.DefaultWorkingDirectory)\RuleApps\$(RuleAppName)\$(RuleAppName).ruleappx
-  TestSuiteLocation: $(System.DefaultWorkingDirectory)\RuleApps\$(RuleAppName)\$(RuleAppName)_Full.testsuite
-  irJsOutputLocationName: $(RuleAppName).min.js
-  irJsOutputLocation: $(System.DefaultWorkingDirectory)\RuleApps\$(RuleAppName)\$(irJsOutputLocationName)
+  RuleAppName: ''
 
 jobs:
 - job: Test
   pool:
     vmImage: 'windows-2019'
+  variables:
+    RuleFolder: $(System.DefaultWorkingDirectory)\RuleApps\$(RuleAppName)
+    RuleAppLocation: $(System.DefaultWorkingDirectory)\RuleApps\$(RuleAppName)\$(RuleAppName).ruleappx
   steps:
   - task: DownloadSecureFile@1
     inputs:
@@ -24,7 +19,6 @@ jobs:
       TargetFolder: '$(Agent.TempDirectory)'
       OverWrite: true
   - script: |
-      echo NOT running .\ExecuteTests.exe  -RuleAppPath:" $(RuleAppLocation)" -TestSuitePath:"$(TestSuiteLocation)"
       echo running for %%i in (dir "$(RuleFolder)\*.testsuite" /b) do ( .\ExecuteTests.exe -RuleAppPath:"$(RuleAppLocation)" -TestSuitePath:"%%i" )
       for %%i in ("$(RuleFolder)\*.testsuite") do ( echo Running TestSuitePath:"%%i" )
       for %%i in ("$(RuleFolder)\*.testsuite") do ( .\ExecuteTests.exe -RuleAppPath:"$(RuleAppLocation)" -TestSuitePath:"%%i" )
@@ -36,6 +30,10 @@ jobs:
     vmImage: 'windows-2019'
   variables:
   - group: Credentials
+  - name: irJsOutputLocation
+    value: $(System.DefaultWorkingDirectory)\RuleApps\$(RuleAppName)\$(RuleAppName).min.js
+  - name: RuleAppLocation
+    value: $(System.DefaultWorkingDirectory)\RuleApps\$(RuleAppName)\$(RuleAppName).ruleappx
   steps:
   - task: CopyFiles@2
     inputs:
@@ -51,4 +49,4 @@ jobs:
   - task: PublishPipelineArtifact@1
     inputs:
       targetPath: "$(irJsOutputLocation)"
-      artifact: '$(irJsOutputLocationName)'
+      artifact: "$(RuleAppName).min.js"
