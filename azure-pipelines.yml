@@ -9,27 +9,52 @@ trigger:
     exclude:
     - Helper*
 
-pool:
-  vmImage: 'windows-2019'
-
 variables:
   RuleAppName: MultiplicationApp
   RuleAppLocation: $(System.DefaultWorkingDirectory)\RuleApps\$(RuleAppName)\$(RuleAppName).ruleappx
   TestSuiteLocation: $(System.DefaultWorkingDirectory)\RuleApps\$(RuleAppName)\$(RuleAppName)_Full.testsuite
+  irJsOutputLocationName: $(RuleAppName).min.js
+  irJsOutputLocation: $(System.DefaultWorkingDirectory)\RuleApps\$(RuleAppName)\$(irJsOutputLocationName)
 
-steps:
-- task: DownloadSecureFile@1
-  inputs:
-    secureFile: 'InRuleLicense.xml'
-- task: CopyFiles@2
-  inputs:
-    SourceFolder: '$(System.DefaultWorkingDirectory)/Helper-ExecuteTests'
-    Contents: '**'
-    TargetFolder: '$(Agent.TempDirectory)'
-    OverWrite: true
-- script: |
-    echo Loading Rule App from $(RuleAppLocation)
-    echo Loading Test Suite from  $(TestSuiteLocation)
-    .\ExecuteTests.exe  -RuleAppPath:" $(RuleAppLocation)" -TestSuitePath:" $(TestSuiteLocation)"
-  displayName: 'Run Tests on $(RuleAppName) Rule App'
-  workingDirectory: $(Agent.TempDirectory)
+jobs:
+- job: Test
+  pool:
+    vmImage: 'windows-2019'
+  steps:
+  - task: DownloadSecureFile@1
+    inputs:
+      secureFile: 'InRuleLicense.xml'
+  - task: CopyFiles@2
+    inputs:
+      SourceFolder: '$(System.DefaultWorkingDirectory)/Helper-ExecuteTests'
+      Contents: '**'
+      TargetFolder: '$(Agent.TempDirectory)'
+      OverWrite: true
+  - script: |
+      echo Loading Rule App from $(RuleAppLocation)
+      echo Loading Test Suite from $(TestSuiteLocation)
+      .\ExecuteTests.exe  -RuleAppPath:" $(RuleAppLocation)" -TestSuitePath:" $(TestSuiteLocation)"
+    displayName: 'Run Tests on $(RuleAppName) Rule App'
+    workingDirectory: $(Agent.TempDirectory)
+- job: Package
+  dependsOn: Test
+  pool:
+    vmImage: 'windows-2019'
+  variables:
+  - group: Credentials
+  steps:
+  - task: CopyFiles@2
+    inputs:
+      SourceFolder: '$(System.DefaultWorkingDirectory)/Helper-BuildIrJsRuleApp'
+      Contents: '**'
+      TargetFolder: '$(Agent.TempDirectory)'
+      OverWrite: true
+  - script: |
+      echo Compiling Rule App from $(RuleAppLocation) for irJS to $(irJsOutputLocation)
+      .\BuildIrJsRuleApp.exe -DistributionKey:$(irDistributionKey) -OutputPath:"$(irJsOutputLocation)" -RuleAppPath:"$(RuleAppLocation)"
+    displayName: 'Build $(RuleAppName) irJS Rule App'
+    workingDirectory: $(Agent.TempDirectory)
+  - task: PublishPipelineArtifact@1
+    inputs:
+      targetPath: "$(irJsOutputLocation)"
+      artifact: '$(irJsOutputLocationName)'
