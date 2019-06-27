@@ -37,8 +37,10 @@ jobs:
   - powershell: |
       git --version
       git diff
+      Write-Host "Adding changed files"
       git add -A
       git diff
+      Write-Host "assigning user"
       git config user.email autobuild@inrule.com
       git config user.name "Azure Devops"
       Write-Host "git commit with message"
