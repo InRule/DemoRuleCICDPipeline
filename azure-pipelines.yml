@@ -13,10 +13,15 @@ pool:
   vmImage: 'windows-2019'
 
 variables:
-  RuleAppName: MultiplicationApp
-  RuleAppLocation: $(System.DefaultWorkingDirectory)\RuleApps\$(RuleAppName)\$(RuleAppName).ruleappx
-  TestSuiteLocation: $(System.DefaultWorkingDirectory)\RuleApps\$(RuleAppName)\$(RuleAppName)_Full.testsuite
-  irJsOutputLocation: $(System.DefaultWorkingDirectory)\RuleApps\$(RuleAppName)\$(RuleAppName).min.js
+  - group: Credentials
+  - name: RuleAppName
+    value: MultiplicationApp
+  - name: RuleAppLocation
+    value: $(System.DefaultWorkingDirectory)\RuleApps\$(RuleAppName)\$(RuleAppName).ruleappx
+  - name: TestSuiteLocation
+    value: $(System.DefaultWorkingDirectory)\RuleApps\$(RuleAppName)\$(RuleAppName)_Full.testsuite
+  - name: irJsOutputLocation
+    value: $(System.DefaultWorkingDirectory)\RuleApps\$(RuleAppName)\$(RuleAppName).min.js
 
 jobs:
 - job: Test
@@ -47,6 +52,6 @@ jobs:
       OverWrite: true
   - script: |
       echo Compiling Rule App from $(RuleAppLocation) for irJS to $(irJsOutputLocation)
-      .\BuildIrJsRuleApp.exe -DistributionKey:00000000-0000-0000-0000-000000000000 -OutputPath:"$(irJsOutputLocation)" -RuleAppPath:"$(RuleAppLocation)"
+      .\BuildIrJsRuleApp.exe -DistributionKey:$(irDistributionKey) -OutputPath:"$(irJsOutputLocation)" -RuleAppPath:"$(RuleAppLocation)"
     displayName: 'Build $(RuleAppName) irJS Rule App'
     workingDirectory: $(Agent.TempDirectory)
