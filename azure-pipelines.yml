@@ -1,6 +1,3 @@
-
-# https://aka.ms/yaml
-
 trigger:
   branches:
     include:
@@ -9,54 +6,7 @@ trigger:
     exclude:
     - Helper*
 
-variables:
-  RuleAppName: MultiplicationApp
-  RuleFolder: $(System.DefaultWorkingDirectory)\RuleApps\$(RuleAppName)
-  RuleAppLocation: $(System.DefaultWorkingDirectory)\RuleApps\$(RuleAppName)\$(RuleAppName).ruleappx
-  TestSuiteLocation: $(System.DefaultWorkingDirectory)\RuleApps\$(RuleAppName)\$(RuleAppName)_Full.testsuite
-  irJsOutputLocationName: $(RuleAppName).min.js
-  irJsOutputLocation: $(System.DefaultWorkingDirectory)\RuleApps\$(RuleAppName)\$(irJsOutputLocationName)
-
 jobs:
-- job: Test
-  pool:
-    vmImage: 'windows-2019'
-  steps:
-  - task: DownloadSecureFile@1
-    inputs:
-      secureFile: 'InRuleLicense.xml'
-  - task: CopyFiles@2
-    inputs:
-      SourceFolder: '$(System.DefaultWorkingDirectory)/Helper-ExecuteTests'
-      Contents: '**'
-      TargetFolder: '$(Agent.TempDirectory)'
-      OverWrite: true
-  - script: |
-      echo NOT running .\ExecuteTests.exe  -RuleAppPath:" $(RuleAppLocation)" -TestSuitePath:"$(TestSuiteLocation)"
-      echo running for %%i in (dir "$(RuleFolder)\*.testsuite" /b) do ( .\ExecuteTests.exe -RuleAppPath:"$(RuleAppLocation)" -TestSuitePath:"%%i" )
-      for %%i in ("$(RuleFolder)\*.testsuite") do ( echo Running TestSuitePath:"%%i" )
-      for %%i in ("$(RuleFolder)\*.testsuite") do ( .\ExecuteTests.exe -RuleAppPath:"$(RuleAppLocation)" -TestSuitePath:"%%i" )
-    displayName: 'Run Tests on $(RuleAppName) Rule App'
-    workingDirectory: $(Agent.TempDirectory)
-- job: Package
-  dependsOn: Test
-  pool:
-    vmImage: 'windows-2019'
-  variables:
-  - group: Credentials
-  steps:
-  - task: CopyFiles@2
-    inputs:
-      SourceFolder: '$(System.DefaultWorkingDirectory)/Helper-BuildIrJsRuleApp'
-      Contents: '**'
-      TargetFolder: '$(Agent.TempDirectory)'
-      OverWrite: true
-  - script: |
-      echo Compiling Rule App from $(RuleAppLocation) for irJS to $(irJsOutputLocation)
-      .\BuildIrJsRuleApp.exe -DistributionKey:$(irDistributionKey) -OutputPath:"$(irJsOutputLocation)" -RuleAppPath:"$(RuleAppLocation)"
-    displayName: 'Build $(RuleAppName) irJS Rule App'
-    workingDirectory: $(Agent.TempDirectory)
-  - task: PublishPipelineArtifact@1
-    inputs:
-      targetPath: "$(irJsOutputLocation)"
-      artifact: '$(irJsOutputLocationName)'
+- template: azure-pipeline-TestAndBuild.yml  # Template reference
+  parameters:
+    ruleName: MultiplicationApp
