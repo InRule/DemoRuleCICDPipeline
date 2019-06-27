@@ -1,11 +1,12 @@
 parameters:
-  RuleAppName: ''
+  RuleAppName: 'UNSET'
 
 jobs:
 - job: Test
   pool:
     vmImage: 'windows-2019'
   variables:
+    RuleAppName: ${{ parameters.RuleAppName }}
     RuleFolder: $(System.DefaultWorkingDirectory)\RuleApps\$(RuleAppName)
     RuleAppLocation: $(System.DefaultWorkingDirectory)\RuleApps\$(RuleAppName)\$(RuleAppName).ruleappx
   steps:
@@ -30,6 +31,8 @@ jobs:
     vmImage: 'windows-2019'
   variables:
   - group: Credentials
+  - name: RuleAppName
+    value: ${{ parameters.RuleAppName }}
   - name: irJsOutputLocation
     value: $(System.DefaultWorkingDirectory)\RuleApps\$(RuleAppName)\$(RuleAppName).min.js
   - name: RuleAppLocation
