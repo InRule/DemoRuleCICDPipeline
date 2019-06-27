@@ -26,7 +26,7 @@ jobs:
     displayName: 'Run Tests on $(RuleAppName) Rule App'
     workingDirectory: $(Agent.TempDirectory)
 - job: Package_${{ parameters.RuleAppName }}
-  dependsOn: Test
+  dependsOn: Test_${{ parameters.RuleAppName }}
   pool:
     vmImage: 'windows-2019'
   variables:
