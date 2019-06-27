@@ -33,7 +33,8 @@ jobs:
       OverWrite: true
   - script: |
       echo NOT running .\ExecuteTests.exe  -RuleAppPath:" $(RuleAppLocation)" -TestSuitePath:"$(TestSuiteLocation)"
-      for %i in (dir $(RuleFolder)\*.testsuite" /b) do ( .\ExecuteTests.exe  -RuleAppPath:" $(RuleAppLocation)" -TestSuitePath:%i ) 
+      echo running for %i in (dir "$(RuleFolder)\*.testsuite" /b) do ( .\ExecuteTests.exe  -RuleAppPath:"$(RuleAppLocation)" -TestSuitePath:"%i" )
+      for %i in (dir "$(RuleFolder)\*.testsuite" /b) do ( .\ExecuteTests.exe  -RuleAppPath:"$(RuleAppLocation)" -TestSuitePath:"%i" )
     displayName: 'Run Tests on $(RuleAppName) Rule App'
     workingDirectory: $(Agent.TempDirectory)
 - job: Package
