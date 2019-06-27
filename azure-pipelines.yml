@@ -31,8 +31,5 @@ steps:
     echo Loading Rule App from $(RuleAppLocation)
     echo Loading Test Suite from  $(TestSuiteLocation)
     .\ExecuteTests.exe  -RuleAppPath:" $(RuleAppLocation)" -TestSuitePath:" $(TestSuiteLocation)"
-    if [ $? -ne 0 ]; then
-      exit 1
-    fi
   displayName: 'Run Tests on $(RuleAppName) Rule App'
   workingDirectory: $(Agent.TempDirectory)
