@@ -9,9 +9,6 @@ trigger:
     exclude:
     - Helper*
 
-pool:
-  vmImage: 'windows-2019'
-
 variables:
   RuleAppName: MultiplicationApp
   RuleAppLocation: $(System.DefaultWorkingDirectory)\RuleApps\$(RuleAppName)\$(RuleAppName).ruleappx
@@ -20,6 +17,8 @@ variables:
 
 jobs:
 - job: Test
+  pool:
+    vmImage: 'windows-2019'
   steps:
   - task: DownloadSecureFile@1
     inputs:
@@ -38,6 +37,8 @@ jobs:
     workingDirectory: $(Agent.TempDirectory)
 - job: Package
   dependsOn: Test
+  pool:
+    vmImage: 'windows-2019'
   variables:
   - group: Credentials
   steps:
