@@ -1,3 +1,4 @@
+
 # https://aka.ms/yaml
 
 trigger:
@@ -13,6 +14,8 @@ pool:
 
 steps:
 - script: |
+    echo Loading Rule App from $(build.sourcesDirectory)\RuleApps\MultiplicationApp\MultiplicationApp.ruleappx
+    echo Loading Test Suite from $(build.sourcesDirectory)\RuleApps\MultiplicationApp\MultiplicationApp.ruleappx
     .\Helper-ExecuteTests\ExecuteTests.exe  -RuleAppPath:"$(build.sourcesDirectory)\RuleApps\MultiplicationApp\MultiplicationApp.ruleappx" -TestSuitePath:"$(build.sourcesDirectory)\RuleApps\MultiplicationApp\MultiplicationApp.ruleappx"
     if [ $? -ne 0 ]; then
       exit 1
