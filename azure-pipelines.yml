@@ -15,8 +15,17 @@ variables:
   TestSuiteLocation: $(System.DefaultWorkingDirectory)\RuleApps\$(RuleAppName)\$(RuleAppName)_Full.testsuite
   irJsOutputLocationName: $(RuleAppName).min.js
   irJsOutputLocation: $(System.DefaultWorkingDirectory)\RuleApps\$(RuleAppName)\$(irJsOutputLocationName)
+  files: [ "file1", "file2" ]
 
 jobs:
+- job: dev
+  pool:
+    vmImage: 'windows-2019'
+  steps:
+  - script: echo "##vso[task.setvariable variable=files;isOutput=true]dir \"./RuleApps\" /b /ad
+    name: setvarStep
+  - script: echo $(files)
+    name: echovar
 - job: Test
   pool:
     vmImage: 'windows-2019'
