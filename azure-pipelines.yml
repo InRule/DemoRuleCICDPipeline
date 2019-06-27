@@ -11,21 +11,13 @@ trigger:
 
 variables:
   RuleAppName: MultiplicationApp
+  RuleFolder: $(System.DefaultWorkingDirectory)\RuleApps\$(RuleAppName)
   RuleAppLocation: $(System.DefaultWorkingDirectory)\RuleApps\$(RuleAppName)\$(RuleAppName).ruleappx
   TestSuiteLocation: $(System.DefaultWorkingDirectory)\RuleApps\$(RuleAppName)\$(RuleAppName)_Full.testsuite
   irJsOutputLocationName: $(RuleAppName).min.js
   irJsOutputLocation: $(System.DefaultWorkingDirectory)\RuleApps\$(RuleAppName)\$(irJsOutputLocationName)
-  files: [ "file1", "file2" ]
 
 jobs:
-- job: dev
-  pool:
-    vmImage: 'windows-2019'
-  steps:
-  - script: echo "##vso[task.setvariable variable=files;isOutput=true]dir \"./RuleApps\" /b /ad
-    name: setvarStep
-  - script: echo $(files)
-    name: echovar
 - job: Test
   pool:
     vmImage: 'windows-2019'
@@ -40,9 +32,8 @@ jobs:
       TargetFolder: '$(Agent.TempDirectory)'
       OverWrite: true
   - script: |
-      echo Loading Rule App from $(RuleAppLocation)
-      echo Loading Test Suite from $(TestSuiteLocation)
-      .\ExecuteTests.exe  -RuleAppPath:" $(RuleAppLocation)" -TestSuitePath:" $(TestSuiteLocation)"
+      echo NOT running .\ExecuteTests.exe  -RuleAppPath:" $(RuleAppLocation)" -TestSuitePath:"$(TestSuiteLocation)"
+      for %i in (dir $(RuleFolder)\*.testsuite" /b) do ( .\ExecuteTests.exe  -RuleAppPath:" $(RuleAppLocation)" -TestSuitePath:%i ) 
     displayName: 'Run Tests on $(RuleAppName) Rule App'
     workingDirectory: $(Agent.TempDirectory)
 - job: Package
