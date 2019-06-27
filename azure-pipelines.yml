@@ -12,13 +12,18 @@ trigger:
 pool:
   vmImage: 'windows-2019'
 
+variables:
+  RuleAppName: MultiplicationApp
+  RuleAppLocation: $(build.sourcesDirectory)\RuleApps\$(RuleAppName)\$(RuleAppName).ruleappx
+  TestSuiteLocation: $(build.sourcesDirectory)\RuleApps\$(RuleAppName)\$(RuleAppName)_Full.testsuite
+
 steps:
 - script: |
-    echo Loading Rule App from $(build.sourcesDirectory)\RuleApps\MultiplicationApp\MultiplicationApp.ruleappx
-    echo Loading Test Suite from $(build.sourcesDirectory)\RuleApps\MultiplicationApp\MultiplicationApp.ruleappx
-    .\Helper-ExecuteTests\ExecuteTests.exe  -RuleAppPath:"$(build.sourcesDirectory)\RuleApps\MultiplicationApp\MultiplicationApp.ruleappx" -TestSuitePath:"$(build.sourcesDirectory)\RuleApps\MultiplicationApp\MultiplicationApp.ruleappx"
+    echo Loading Rule App from $(RuleAppLocation)
+    echo Loading Test Suite from  $(TestSuiteLocation)
+    .\Helper-ExecuteTests\ExecuteTests.exe  -RuleAppPath:" $(RuleAppLocation)" -TestSuitePath:" $(TestSuiteLocation)"
     if [ $? -ne 0 ]; then
       exit 1
     fi
-  displayName: 'Run Tests on Multiplication App'
+  displayName: 'Run Tests on $(RuleAppName) Rule App'
   workingDirectory: $(build.sourcesDirectory)
