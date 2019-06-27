@@ -14,8 +14,8 @@ pool:
 
 variables:
   RuleAppName: MultiplicationApp
-  RuleAppLocation: $(build.sourcesDirectory)\RuleApps\$(RuleAppName)\$(RuleAppName).ruleappx
-  TestSuiteLocation: $(build.sourcesDirectory)\RuleApps\$(RuleAppName)\$(RuleAppName)_Full.testsuite
+  RuleAppLocation: $(System.DefaultWorkingDirectory)\RuleApps\$(RuleAppName)\$(RuleAppName).ruleappx
+  TestSuiteLocation: $(System.DefaultWorkingDirectory)\RuleApps\$(RuleAppName)\$(RuleAppName)_Full.testsuite
   inrule:repository:licensing:licenseFolder: $(Agent.TempDirectory)
 
 
@@ -26,7 +26,7 @@ steps:
     secureFile: 'InRuleLicense.xml'
 - task: FileTransform@1
   inputs:
-    folderPath: '$(build.sourcesDirectory)'
+    folderPath: '$(System.DefaultWorkingDirectory)'
     enableXmlTransform: true
     fileType: 'xml'
     targetFiles: '*.exe.config'
@@ -38,4 +38,4 @@ steps:
       exit 1
     fi
   displayName: 'Run Tests on $(RuleAppName) Rule App'
-  workingDirectory: $(build.sourcesDirectory)
+  workingDirectory: $(System.DefaultWorkingDirectory)
