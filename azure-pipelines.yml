@@ -1,0 +1,23 @@
+# https://aka.ms/yaml
+
+trigger:
+  branches:
+    include:
+    - master
+  paths:
+    exclude:
+    - Helper*
+
+pool:
+  vmImage: 'windows-2019'
+
+resources:
+  repositories:
+  - repository: common
+    type: github
+    name: InRule/DemoRuleCICDPipeline
+
+steps:
+- script: ./Helper-ExecuteTests\ExecuteTests.exe  -RuleAppPath:"$(build.sourcesDirectory)\RuleApps\MultiplicationApp\MultiplicationApp.ruleappx" -TestSuitePath:"$(build.sourcesDirectory)\RuleApps\MultiplicationApp\MultiplicationApp.ruleappx"
+  displayName: 'Run Tests on Multiplication App'
+  workingDirectory: $(build.sourcesDirectory)
