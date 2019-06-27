@@ -26,7 +26,7 @@ steps:
     secureFile: 'InRuleLicense.xml'
 - task: FileTransform@1
   inputs:
-    folderPath: '$(build.sourcesDirectory)/!(Helper)*'
+    folderPath: '$(build.sourcesDirectory)'
     enableXmlTransform: true
     fileType: 'xml'
     targetFiles: '*.exe.config'
