@@ -16,26 +16,23 @@ variables:
   RuleAppName: MultiplicationApp
   RuleAppLocation: $(System.DefaultWorkingDirectory)\RuleApps\$(RuleAppName)\$(RuleAppName).ruleappx
   TestSuiteLocation: $(System.DefaultWorkingDirectory)\RuleApps\$(RuleAppName)\$(RuleAppName)_Full.testsuite
-  inrule:repository:licensing:licenseFolder: $(Agent.TempDirectory)
-
-
 
 steps:
 - task: DownloadSecureFile@1
   inputs:
     secureFile: 'InRuleLicense.xml'
-- task: FileTransform@1
+- task: CopyFiles@2
   inputs:
-    folderPath: '$(System.DefaultWorkingDirectory)'
-    enableXmlTransform: true
-    fileType: 'xml'
-    targetFiles: '*.exe.config'
+    SourceFolder: '$(System.DefaultWorkingDirectory)/Helper-ExecuteTests'
+    Contents: '**'
+    TargetFolder: '$(Agent.TempDirectory)'
+    OverWrite: true
 - script: |
     echo Loading Rule App from $(RuleAppLocation)
     echo Loading Test Suite from  $(TestSuiteLocation)
-    .\Helper-ExecuteTests\ExecuteTests.exe  -RuleAppPath:" $(RuleAppLocation)" -TestSuitePath:" $(TestSuiteLocation)"
+    .\ExecuteTests.exe  -RuleAppPath:" $(RuleAppLocation)" -TestSuitePath:" $(TestSuiteLocation)"
     if [ $? -ne 0 ]; then
       exit 1
     fi
   displayName: 'Run Tests on $(RuleAppName) Rule App'
-  workingDirectory: $(System.DefaultWorkingDirectory)
+  workingDirectory: $(Agent.TempDirectory)
