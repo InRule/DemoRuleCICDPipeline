@@ -10,3 +10,6 @@ jobs:
 - template: azure-pipeline-TestAndBuild.yml  # Template reference
   parameters:
     RuleAppName: MultiplicationApp
+- template: azure-pipeline-TestAndBuild.yml  # Template reference
+  parameters:
+    RuleAppName: AdditionApp
