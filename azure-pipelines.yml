@@ -16,8 +16,20 @@ variables:
   RuleAppName: MultiplicationApp
   RuleAppLocation: $(build.sourcesDirectory)\RuleApps\$(RuleAppName)\$(RuleAppName).ruleappx
   TestSuiteLocation: $(build.sourcesDirectory)\RuleApps\$(RuleAppName)\$(RuleAppName)_Full.testsuite
+  inrule:repository:licensing:licenseFolder: $(Agent.TempDirectory)
+
+
 
 steps:
+- task: DownloadSecureFile@1
+  inputs:
+    secureFile: 'InRuleLicense.xml'
+- task: FileTransform@1
+  inputs:
+    folderPath: '$(build.sourcesDirectory)/!(Helper)*'
+    enableXmlTransform: true
+    fileType: 'xml'
+    targetFiles: '*.exe.config'
 - script: |
     echo Loading Rule App from $(RuleAppLocation)
     echo Loading Test Suite from  $(TestSuiteLocation)
