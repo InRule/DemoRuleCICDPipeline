@@ -19,7 +19,6 @@ variables:
 jobs:
 
 - job: Package
-  dependsOn: Test
   pool:
     vmImage: 'windows-2019'
   variables:
