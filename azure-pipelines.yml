@@ -1,3 +1,4 @@
+
 # https://aka.ms/yaml
 
 trigger:
@@ -11,7 +12,24 @@ trigger:
 pool:
   vmImage: 'windows-2019'
 
+variables:
+  RuleAppName: MultiplicationApp
+  RuleAppLocation: $(System.DefaultWorkingDirectory)\RuleApps\$(RuleAppName)\$(RuleAppName).ruleappx
+  TestSuiteLocation: $(System.DefaultWorkingDirectory)\RuleApps\$(RuleAppName)\$(RuleAppName)_Full.testsuite
+
 steps:
-- script: .\Helper-ExecuteTests\ExecuteTests.exe  -RuleAppPath:"$(build.sourcesDirectory)\RuleApps\MultiplicationApp\MultiplicationApp.ruleappx" -TestSuitePath:"$(build.sourcesDirectory)\RuleApps\MultiplicationApp\MultiplicationApp.ruleappx"
-  displayName: 'Run Tests on Multiplication App'
-  workingDirectory: $(build.sourcesDirectory)
+- task: DownloadSecureFile@1
+  inputs:
+    secureFile: 'InRuleLicense.xml'
+- task: CopyFiles@2
+  inputs:
+    SourceFolder: '$(System.DefaultWorkingDirectory)/Helper-ExecuteTests'
+    Contents: '**'
+    TargetFolder: '$(Agent.TempDirectory)'
+    OverWrite: true
+- script: |
+    echo Loading Rule App from $(RuleAppLocation)
+    echo Loading Test Suite from  $(TestSuiteLocation)
+    .\ExecuteTests.exe  -RuleAppPath:" $(RuleAppLocation)" -TestSuitePath:" $(TestSuiteLocation)"
+  displayName: 'Run Tests on $(RuleAppName) Rule App'
+  workingDirectory: $(Agent.TempDirectory)
