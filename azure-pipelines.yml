@@ -11,6 +11,7 @@ trigger:
 
 variables:
   RuleAppName: MultiplicationApp
+  RuleFolder: $(System.DefaultWorkingDirectory)\RuleApps\$(RuleAppName)
   RuleAppLocation: $(System.DefaultWorkingDirectory)\RuleApps\$(RuleAppName)\$(RuleAppName).ruleappx
   TestSuiteLocation: $(System.DefaultWorkingDirectory)\RuleApps\$(RuleAppName)\$(RuleAppName)_Full.testsuite
   irJsOutputLocationName: $(RuleAppName).min.js
@@ -31,9 +32,10 @@ jobs:
       TargetFolder: '$(Agent.TempDirectory)'
       OverWrite: true
   - script: |
-      echo Loading Rule App from $(RuleAppLocation)
-      echo Loading Test Suite from $(TestSuiteLocation)
-      .\ExecuteTests.exe  -RuleAppPath:" $(RuleAppLocation)" -TestSuitePath:" $(TestSuiteLocation)"
+      echo NOT running .\ExecuteTests.exe  -RuleAppPath:" $(RuleAppLocation)" -TestSuitePath:"$(TestSuiteLocation)"
+      echo running for %%i in (dir "$(RuleFolder)\*.testsuite" /b) do ( .\ExecuteTests.exe -RuleAppPath:"$(RuleAppLocation)" -TestSuitePath:"%%i" )
+      for %%i in ("$(RuleFolder)\*.testsuite") do ( echo Running TestSuitePath:"%%i" )
+      for %%i in ("$(RuleFolder)\*.testsuite") do ( .\ExecuteTests.exe -RuleAppPath:"$(RuleAppLocation)" -TestSuitePath:"%%i" )
     displayName: 'Run Tests on $(RuleAppName) Rule App'
     workingDirectory: $(Agent.TempDirectory)
 - job: Package
