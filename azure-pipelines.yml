@@ -13,15 +13,10 @@ pool:
   vmImage: 'windows-2019'
 
 variables:
-  - group: Credentials
-  - name: RuleAppName
-    value: MultiplicationApp
-  - name: RuleAppLocation
-    value: $(System.DefaultWorkingDirectory)\RuleApps\$(RuleAppName)\$(RuleAppName).ruleappx
-  - name: TestSuiteLocation
-    value: $(System.DefaultWorkingDirectory)\RuleApps\$(RuleAppName)\$(RuleAppName)_Full.testsuite
-  - name: irJsOutputLocation
-    value: $(System.DefaultWorkingDirectory)\RuleApps\$(RuleAppName)\$(RuleAppName).min.js
+  RuleAppName: MultiplicationApp
+  RuleAppLocation: $(System.DefaultWorkingDirectory)\RuleApps\$(RuleAppName)\$(RuleAppName).ruleappx
+  TestSuiteLocation: $(System.DefaultWorkingDirectory)\RuleApps\$(RuleAppName)\$(RuleAppName)_Full.testsuite
+  irJsOutputLocation: $(System.DefaultWorkingDirectory)\RuleApps\$(RuleAppName)\$(RuleAppName).min.js
 
 jobs:
 - job: Test
@@ -43,6 +38,8 @@ jobs:
     workingDirectory: $(Agent.TempDirectory)
 - job: Package
   dependsOn: Test
+  variables:
+  - group: Credentials
   steps:
   - task: CopyFiles@2
     inputs:
