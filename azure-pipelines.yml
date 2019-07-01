@@ -3,8 +3,8 @@ trigger:
     include:
     - master
   paths:
-    exclude:
-    - Helper*
+    include:
+      - RuleApps*
 
 jobs:
 - template: azure-pipeline-TestAndBuild.yml  # Template reference
