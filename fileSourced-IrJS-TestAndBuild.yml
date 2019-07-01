@@ -30,7 +30,7 @@ jobs:
   pool:
     vmImage: 'windows-2019'
   variables:
-  - group: Credentials
+  - group: IrJSCredentials
   - name: RuleAppName
     value: ${{ parameters.RuleAppName }}
   - name: irJsOutputLocation

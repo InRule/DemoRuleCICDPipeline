@@ -1,22 +1,18 @@
 parameters:
   RuleAppName: 'UNSET'
-  SourceCatalogUri: 'UNSET'
-  SourceCatalogUsername: 'UNSET'
-  SourceCatalogPassword: 'UNSET'
-  DestinationCatalogUri: 'UNSET'
-  DestinationCatalogUsername: 'UNSET'
-  DestinationCatalogPassword: 'UNSET'
+  SourceCatalogName: 'UNSET'
+  DestinationCatalogName: 'UNSET'
 
 jobs:
 - job: Test_${{ parameters.RuleAppName }}
   pool:
     vmImage: 'windows-2019'
   variables:
-    RuleAppName: ${{ parameters.RuleAppName }}
-    RuleTestFolder: $(System.DefaultWorkingDirectory)\catalogSourced-TestAndPromote TestSuites\$(RuleAppName)
-    sCatUri: ${{ parameters.SourceCatalogUri }}
-    sCatUser: ${{ parameters.SourceCatalogUsername }}
-    sCatPass: ${{ parameters.SourceCatalogPassword }}
+  - group: SourceCatCredsFor$(SourceCatalogName)
+  - name: RuleAppName
+    value: ${{ parameters.RuleAppName }}
+  - name: RuleTestFolder
+    value: $(System.DefaultWorkingDirectory)\catalogSourced-TestAndPromote TestSuites\$(RuleAppName)
   steps:
   - task: DownloadSecureFile@1
     inputs:
@@ -29,7 +25,7 @@ jobs:
       OverWrite: true
   - script: |
       for %%i in ("$(RuleTestFolder)\*.testsuite") do ( echo Running TestSuitePath:"%%i" )
-      for %%i in ("$(RuleTestFolder)\*.testsuite") do ( .\ExecuteTests.exe -TestSuitePath:"%%i" -CatUri:"$(sCatUri)" -CatUsername:"$(sCatUser)" -CatPassword:"$(sCatPass)" -CatRuleAppName:"$(RuleAppName)")
+      for %%i in ("$(RuleTestFolder)\*.testsuite") do ( .\ExecuteTests.exe -TestSuitePath:"%%i" -CatUri:"$(SourceCatalogUri)" -CatUsername:"$(SourceCatalogUsername)" -CatPassword:"$(SourceCatalogPassword)" -CatRuleAppName:"$(RuleAppName)")
     displayName: 'Run Tests on $(RuleAppName) Rule App'
     workingDirectory: $(Agent.TempDirectory)
 - job: Promote_${{ parameters.RuleAppName }}
@@ -37,13 +33,10 @@ jobs:
   pool:
     vmImage: 'windows-2019'
   variables:
-    RuleAppName: ${{ parameters.RuleAppName }}
-    sCatUri: ${{ parameters.SourceCatalogUri }}
-    sCatUser: ${{ parameters.SourceCatalogUsername }}
-    sCatPass: ${{ parameters.SourceCatalogPassword }}
-    dCatUri: ${{ parameters.DestinationCatalogUri }}
-    dCatUser: ${{ parameters.DestinationCatalogUsername }}
-    dCatPass: ${{ parameters.DestinationCatalogPassword }}
+  - group: SourceCatCredsFor$(SourceCatalogName)
+  - group: DestCatCredsFor$(DestinationCatalogName)
+  - name: RuleAppName
+    value: ${{ parameters.RuleAppName }}
   steps:
   - task: DownloadSecureFile@1
     inputs:
@@ -55,7 +48,7 @@ jobs:
       TargetFolder: '$(Agent.TempDirectory)'
       OverWrite: true
   - script: |
-      echo Promoting Rule App from $(sCatUri) to $(dCatUri)
-      .\PromoteRuleApp.exe -RuleAppName:"$(RuleAppName)" -Comment:"Publish from command line tool" -SrcCatUri:"$(sCatUri)" -SrcCatUser:"$(sCatUser)" -SrcCatPass:"$(sCatPass)" -DestCatUri:"$(dCatUri)" -DestCatUser:"$(dCatUser)" -DestCatPass:"$(dCatPass)"
+      echo Promoting Rule App from $(SourceCatalogUri) to $(DestinationCatalogUri)
+      .\PromoteRuleApp.exe -RuleAppName:"$(RuleAppName)" -Comment:"Publish from command line tool" -SrcCatUri:"$(SourceCatalogUri)" -SrcCatUser:"$(SourceCatalogUsername)" -SrcCatPass:"$(SourceCatalogPassword)" -DestCatUri:"$(DestinationCatalogUri)" -DestCatUser:"$(DestinationCatalogUsername)" -DestCatPass:"$(DestinationCatalogPassword)"
     displayName: 'Promote $(RuleAppName)'
     workingDirectory: $(Agent.TempDirectory)

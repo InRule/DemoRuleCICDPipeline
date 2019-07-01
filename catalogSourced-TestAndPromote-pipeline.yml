@@ -6,9 +6,5 @@ jobs:
   - group: Credentials
   parameters:
     RuleAppName: MultiplicationApp
-    SourceCatalogUri: $(CatalogDevUri)
-    SourceCatalogUsername: $(CatalogDevUsername)
-    SourceCatalogPassword: $(CatalogDevPassword)
-    DestinationCatalogUri: $(CatalogUATUri)
-    DestinationCatalogUsername: $(CatalogUATUsername)
-    DestinationCatalogPassword: $(CatalogUATPassword)
+    SourceCatalogName: Dev
+    DestinationCatalogName: UAT
