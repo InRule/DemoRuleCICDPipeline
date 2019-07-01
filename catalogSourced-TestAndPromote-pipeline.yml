@@ -2,8 +2,6 @@ trigger: none
 
 jobs:
 - template: catalogSourced-TestAndPromote.yml
-  variables:
-  - group: Credentials
   parameters:
     RuleAppName: MultiplicationApp
     SourceCatalogName: Dev
