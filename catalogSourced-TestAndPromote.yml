@@ -8,11 +8,13 @@ jobs:
   pool:
     vmImage: 'windows-2019'
   variables:
-  - group: SourceCatCredsFor$(SourceCatalogName)
   - name: RuleAppName
     value: ${{ parameters.RuleAppName }}
   - name: RuleTestFolder
     value: $(System.DefaultWorkingDirectory)\catalogSourced-TestAndPromote TestSuites\$(RuleAppName)
+  - name: SourceCredLibrary
+    value: SourceCatCredsFor$(SourceCatalogName)
+  - group: $(SourceCredLibrary)
   steps:
   - task: DownloadSecureFile@1
     inputs:
