@@ -8,13 +8,12 @@ jobs:
   pool:
     vmImage: 'windows-2019'
   variables:
+  #- group: SourceCatCredsFor$(SourceCatalogName) This is not yet supported - https://github.com/MicrosoftDocs/vsts-docs/issues/3702
+  - group: SourceCatCredsForDev
   - name: RuleAppName
     value: ${{ parameters.RuleAppName }}
   - name: RuleTestFolder
     value: $(System.DefaultWorkingDirectory)\catalogSourced-TestAndPromote TestSuites\$(RuleAppName)
-  - name: SourceCredLibrary
-    value: SourceCatCredsFor$(SourceCatalogName)
-  - group: $(SourceCredLibrary)
   steps:
   - task: DownloadSecureFile@1
     inputs:
@@ -35,14 +34,12 @@ jobs:
   pool:
     vmImage: 'windows-2019'
   variables:
+  ##- group: SourceCatCredsFor$(SourceCatalogName) This is not yet supported - https://github.com/MicrosoftDocs/vsts-docs/issues/3702
+  #- group: DestCatCredsFor$(DestinationCatalogName) This is not yet supported - https://github.com/MicrosoftDocs/vsts-docs/issues/3702
+  - group: SourceCatCredsForDev
+  - group: DestCatCredsForUAT
   - name: RuleAppName
     value: ${{ parameters.RuleAppName }}
-  - name: SourceCredLibrary
-    value: SourceCatCredsFor$(SourceCatalogName)
-  - group: $(SourceCredLibrary)
-  - name: DestCredLibrary
-    value: DestCatCredsFor$(DestinationCatalogName)
-  - group: $(DestCredLibrary)
   steps:
   - task: DownloadSecureFile@1
     inputs:
