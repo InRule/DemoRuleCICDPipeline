@@ -33,10 +33,14 @@ jobs:
   pool:
     vmImage: 'windows-2019'
   variables:
-  - group: SourceCatCredsFor$(SourceCatalogName)
-  - group: DestCatCredsFor$(DestinationCatalogName)
   - name: RuleAppName
     value: ${{ parameters.RuleAppName }}
+  - name: SourceCredLibrary
+    value: SourceCatCredsFor$(SourceCatalogName)
+  - group: $(SourceCredLibrary)
+  - name: DestCredLibrary
+    value: DestCatCredsFor$(DestinationCatalogName)
+  - group: $(DestCredLibrary)
   steps:
   - task: DownloadSecureFile@1
     inputs:
