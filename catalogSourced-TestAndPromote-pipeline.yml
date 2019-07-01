@@ -12,12 +12,3 @@ jobs:
     DestinationCatalogUri: $(CatalogUATUri)
     DestinationCatalogUsername: $(CatalogUATUsername)
     DestinationCatalogPassword: $(CatalogUATPassword)
-- template: catalogSourced-TestAndPromote.yml
-  parameters:
-    RuleAppName: AdditionApp
-    SourceCatalogUri: $(CatalogDevUri)
-    SourceCatalogUsername: $(CatalogDevUsername)
-    SourceCatalogPassword: $(CatalogDevPassword)
-    DestinationCatalogUri: $(CatalogUATUri)
-    DestinationCatalogUsername: $(CatalogUATUsername)
-    DestinationCatalogPassword: $(CatalogUATPassword)
