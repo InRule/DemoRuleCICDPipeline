@@ -52,6 +52,6 @@ jobs:
       OverWrite: true
   - script: |
       echo Promoting Rule App from $(SourceCatalogUri) to $(DestinationCatalogUri)
-      .\PromoteRuleApp.exe -RuleAppName:"$(RuleAppName)" -Comment:"Publish from command line tool" -SrcCatUri:"$(SourceCatalogUri)" -SrcCatUser:"$(SourceCatalogUsername)" -SrcCatPass:"$(SourceCatalogPassword)" -DestCatUri:"$(DestinationCatalogUri)" -DestCatUser:"$(DestinationCatalogUsername)" -DestCatPass:"$(DestinationCatalogPassword)"
+      .\PromoteRuleApp.exe -RuleAppName:"$(RuleAppName)" -Comment:"Publish from command line tool" -SrcCatUri:"$(SourceCatalogUri)/core" -SrcCatUser:"$(SourceCatalogUsername)" -SrcCatPass:"$(SourceCatalogPassword)" -DestCatUri:"$(DestinationCatalogUri)/core" -DestCatUser:"$(DestinationCatalogUsername)" -DestCatPass:"$(DestinationCatalogPassword)"
     displayName: 'Promote $(RuleAppName)'
     workingDirectory: $(Agent.TempDirectory)
