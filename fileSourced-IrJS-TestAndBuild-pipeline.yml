@@ -4,12 +4,12 @@ trigger:
     - master
   paths:
     include:
-      - "fileSourced-IrJS-TestAndBuild RuleApps*"
+    - "fileSourced-IrJS-TestAndBuild RuleApps*"
 
 jobs:
-- template: azure-pipeline-TestAndBuild.yml
+- template: "fileSourced-IrJS-TestAndBuild.yml"
   parameters:
     RuleAppName: MultiplicationApp
-- template: azure-pipeline-TestAndBuild.yml
+- template: "fileSourced-IrJS-TestAndBuild.yml"
   parameters:
     RuleAppName: AdditionApp
