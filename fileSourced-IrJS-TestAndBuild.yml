@@ -7,8 +7,8 @@ jobs:
     vmImage: 'windows-2019'
   variables:
     RuleAppName: ${{ parameters.RuleAppName }}
-    RuleFolder: $(System.DefaultWorkingDirectory)\RuleApps\$(RuleAppName)
-    RuleAppLocation: $(System.DefaultWorkingDirectory)\RuleApps\$(RuleAppName)\$(RuleAppName).ruleappx
+    RuleFolder: $(System.DefaultWorkingDirectory)\fileSourced-IrJS-TestAndBuild RuleApps\$(RuleAppName)
+    RuleAppLocation: $(System.DefaultWorkingDirectory)\fileSourced-IrJS-TestAndBuild RuleApps\$(RuleAppName)\$(RuleAppName).ruleappx
   steps:
   - task: DownloadSecureFile@1
     inputs:
@@ -34,9 +34,9 @@ jobs:
   - name: RuleAppName
     value: ${{ parameters.RuleAppName }}
   - name: irJsOutputLocation
-    value: $(System.DefaultWorkingDirectory)\RuleApps\$(RuleAppName)\$(RuleAppName).min.js
+    value: $(System.DefaultWorkingDirectory)\fileSourced-IrJS-TestAndBuild RuleApps\$(RuleAppName)\$(RuleAppName).min.js
   - name: RuleAppLocation
-    value: $(System.DefaultWorkingDirectory)\RuleApps\$(RuleAppName)\$(RuleAppName).ruleappx
+    value: $(System.DefaultWorkingDirectory)\fileSourced-IrJS-TestAndBuild RuleApps\$(RuleAppName)\$(RuleAppName).ruleappx
   steps:
   - task: CopyFiles@2
     inputs:
