@@ -1,0 +1,61 @@
+parameters:
+  RuleAppName: 'UNSET'
+  SourceCatalogUri: 'UNSET'
+  SourceCatalogUsername: 'UNSET'
+  SourceCatalogPassword: 'UNSET'
+  DestinationCatalogUri: 'UNSET'
+  DestinationCatalogUsername: 'UNSET'
+  DestinationCatalogPassword: 'UNSET'
+
+jobs:
+- job: Test_${{ parameters.RuleAppName }}
+  pool:
+    vmImage: 'windows-2019'
+  variables:
+    RuleAppName: ${{ parameters.RuleAppName }}
+    RuleTestFolder: $(System.DefaultWorkingDirectory)\catalogSourced-TestAndPromote TestSuites\$(RuleAppName)
+    sCatUri: ${{ parameters.SourceCatalogUri }}
+    sCatUser: ${{ parameters.SourceCatalogUsername }}
+    sCatPass: ${{ parameters.SourceCatalogPassword }}
+  steps:
+  - task: DownloadSecureFile@1
+    inputs:
+      secureFile: 'InRuleLicense.xml'
+  - task: CopyFiles@2
+    inputs:
+      SourceFolder: '$(System.DefaultWorkingDirectory)/Helper-ExecuteTests'
+      Contents: '**'
+      TargetFolder: '$(Agent.TempDirectory)'
+      OverWrite: true
+  - script: |
+      for %%i in ("$(RuleTestFolder)\*.testsuite") do ( echo Running TestSuitePath:"%%i" )
+      for %%i in ("$(RuleTestFolder)\*.testsuite") do ( .\ExecuteTests.exe -TestSuitePath:"%%i" -CatUri:"$(sCatUri)" -CatUsername:"$(sCatUser)" -CatPassword:"$(sCatPass)" -CatRuleAppName:"$(RuleAppName)")
+    displayName: 'Run Tests on $(RuleAppName) Rule App'
+    workingDirectory: $(Agent.TempDirectory)
+- job: Promote_${{ parameters.RuleAppName }}
+  dependsOn: Test_${{ parameters.RuleAppName }}
+  pool:
+    vmImage: 'windows-2019'
+  variables:
+    RuleAppName: ${{ parameters.RuleAppName }}
+    sCatUri: ${{ parameters.SourceCatalogUri }}
+    sCatUser: ${{ parameters.SourceCatalogUsername }}
+    sCatPass: ${{ parameters.SourceCatalogPassword }}
+    dCatUri: ${{ parameters.DestinationCatalogUri }}
+    dCatUser: ${{ parameters.DestinationCatalogUsername }}
+    dCatPass: ${{ parameters.DestinationCatalogPassword }}
+  steps:
+  - task: DownloadSecureFile@1
+    inputs:
+      secureFile: 'InRuleLicense.xml'
+  - task: CopyFiles@2
+    inputs:
+      SourceFolder: '$(System.DefaultWorkingDirectory)/Helper-PromoteRuleApp'
+      Contents: '**'
+      TargetFolder: '$(Agent.TempDirectory)'
+      OverWrite: true
+  - script: |
+      echo Promoting Rule App from $(sCatUri) to $(dCatUri)
+      .\PromoteRuleApp.exe -RuleAppName:"$(RuleAppName)" -Comment:"Publish from command line tool" -SrcCatUri:"$(sCatUri)" -SrcCatUser:"$(sCatUser)" -SrcCatPass:"$(sCatPass)" -DestCatUri:"$(dCatUri)" -DestCatUser:"$(dCatUser)" -DestCatPass:"$(dCatPass)"
+    displayName: 'Promote $(RuleAppName)'
+    workingDirectory: $(Agent.TempDirectory)
