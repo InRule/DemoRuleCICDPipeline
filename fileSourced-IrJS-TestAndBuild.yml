@@ -15,7 +15,7 @@ jobs:
       secureFile: 'InRuleLicense.xml'
   - task: CopyFiles@2
     inputs:
-      SourceFolder: '$(System.DefaultWorkingDirectory)/Helper-ExecuteTests'
+      SourceFolder: '$(System.DefaultWorkingDirectory)/Helpers/ExecuteTests'
       Contents: '**'
       TargetFolder: '$(Agent.TempDirectory)'
       OverWrite: true
@@ -40,7 +40,7 @@ jobs:
   steps:
   - task: CopyFiles@2
     inputs:
-      SourceFolder: '$(System.DefaultWorkingDirectory)/Helper-BuildIrJsRuleApp'
+      SourceFolder: '$(System.DefaultWorkingDirectory)/Helpers/BuildIrJsRuleApp'
       Contents: '**'
       TargetFolder: '$(Agent.TempDirectory)'
       OverWrite: true

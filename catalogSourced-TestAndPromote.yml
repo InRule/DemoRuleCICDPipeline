@@ -20,7 +20,7 @@ jobs:
       secureFile: 'InRuleLicense.xml'
   - task: CopyFiles@2
     inputs:
-      SourceFolder: '$(System.DefaultWorkingDirectory)/Helper-ExecuteTests'
+      SourceFolder: '$(System.DefaultWorkingDirectory)/Helpers/ExecuteTests'
       Contents: '**'
       TargetFolder: '$(Agent.TempDirectory)'
       OverWrite: true
@@ -46,7 +46,7 @@ jobs:
       secureFile: 'InRuleLicense.xml'
   - task: CopyFiles@2
     inputs:
-      SourceFolder: '$(System.DefaultWorkingDirectory)/Helper-PromoteRuleApp'
+      SourceFolder: '$(System.DefaultWorkingDirectory)/Helpers/PromoteRuleApp'
       Contents: '**'
       TargetFolder: '$(Agent.TempDirectory)'
       OverWrite: true
