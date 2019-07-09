@@ -7,6 +7,7 @@ In the configuration file, add the following AppSettings (or reference a separat
 	<add key="AzureDevOpsPipelineID" value="2" />
 	<add key="AzureDevOpsAuthToken" value="xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx" />
 	<add key="AutoPromoteRuleAppsNamed" value="MultiplicationApp|AdditionalRuleAppNameHere" />
+	<add key="AutoPromoteRuleAppsLabeled" value="LIVE|Production" />
   </appSettings>
 
 Just before the </system.serviceModel> tag, add a new section for the extension with the following:
