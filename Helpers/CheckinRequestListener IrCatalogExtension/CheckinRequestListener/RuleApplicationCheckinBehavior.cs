@@ -22,6 +22,7 @@ namespace CheckinRequestListener
                 operation.ParameterInspectors.Add(new RuleApplicationParameterInspector());
             }
         }
+        #region Unused Interface Methods
         public void Validate(ServiceEndpoint endpoint)
         {
         }
@@ -31,5 +32,6 @@ namespace CheckinRequestListener
         public void ApplyClientBehavior(ServiceEndpoint endpoint, ClientRuntime clientRuntime)
         {
         }
+        #endregion
     }
 }

@@ -2,19 +2,19 @@ In the irCatalog service configuration file (Program Files (x86)\InRule\irServer
 
 In the configuration file, add the following AppSettings (or reference a separate config using configSource="InRule_app.config"):
 ```html
-  <appSettings>
-	<add key="AzureDevOpsPipelineOrg" value="OrganizationName" />
-	<add key="AzureDevOpsPipelineProject" value="ProjectName" />
-	<add key="AzureDevOpsPipelineID" value="2" />
-	<add key="AzureDevOpsAuthToken" value="xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx" />
-	<add key="AutoPromoteRuleAppsNamed" value="MultiplicationApp|AdditionalRuleAppNameHere" />
-	<add key="AutoPromoteRuleAppsLabeled" value="LIVE|Production" />
-  </appSettings>
+	<appSettings>
+		<add key="AzureDevOpsPipelineOrg" value="OrganizationName" />
+		<add key="AzureDevOpsPipelineProject" value="ProjectName" />
+		<add key="AzureDevOpsPipelineID" value="2" />
+		<add key="AzureDevOpsAuthToken" value="xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx" />
+		<add key="AutoPromoteRuleAppsNamed" value="MultiplicationApp|AdditionalRuleAppNameHere" />
+		<add key="AutoPromoteRuleAppsLabeled" value="LIVE|Production" />
+	</appSettings>
 ```
 
 Just before the /system.serviceModel tag, add a new section for the extension with the following:
 ```html
-    <extensions>
+	<extensions>
 		<behaviorExtensions>
 			<add name="ruleAppCheckinBehavior" type="CheckinRequestListener.RuleApplicationCheckinBehavior, CheckinRequestListener" />
 		</behaviorExtensions>

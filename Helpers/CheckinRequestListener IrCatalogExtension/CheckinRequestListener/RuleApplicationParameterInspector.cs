@@ -36,32 +36,60 @@ namespace CheckinRequestListener
                 if (string.Equals(operationName, "CheckinRuleApp", StringComparison.OrdinalIgnoreCase))
                 {
                     var response = (InRule.Repository.Service.Data.Responses.CheckinRuleAppResponse)returnValue;
-                    var ruleAppData = RuleAppDataCache.Add(response.RuleAppXml.Xml);
+                    var ruleApp = RuleAppDataCache.Add(response.RuleAppXml.Xml);
 
-                    // If you don't want to filter the trigger condition by label, then trigger upon checkin complete
-                    string labelsToInclude = ConfigurationManager.AppSettings["AutoPromoteRuleAppsLabeled"];
-                    if (string.IsNullOrEmpty(labelsToInclude))
-                        TriggerPipeline(ruleAppData);
+                    // If you always want to trigger reguardless of label, then trigger upon checkin complete and not on ApplyLabel
+                    if(!IsLabelTriggerConfigured() && IsRuleAppConfiguredToTriggerPipeline(ruleApp.Name))
+                        TriggerPipeline(ruleApp);
                 }
-                else if (string.Equals(operationName, "ApplyLabel", StringComparison.OrdinalIgnoreCase))
+                else if (string.Equals(operationName, "ApplyLabel", StringComparison.OrdinalIgnoreCase) && IsLabelTriggerConfigured())
                 {
-                    string labelsToInclude = ConfigurationManager.AppSettings["AutoPromoteRuleAppsLabeled"];
-                    if (!labelsToInclude.Split('|').Contains(correlationState.ToString().Split('|')[0]))
-                        return;
+                    string label = correlationState.ToString().Split('|')[0];
+                    if (IsLabelConfiguredToTriggerPipeline(label))
+                    {
+                        string ruleAppGuid = correlationState.ToString().Split('|')[1];
+                        var ruleApp = RuleAppDataCache.Get(ruleAppGuid);
 
-                    var ruleApp = RuleAppDataCache.Get(correlationState.ToString().Split('|')[1]);
-
-                    string ruleAppsToInclude = ConfigurationManager.AppSettings["AutoPromoteRuleAppsNamed"];
-                    if (!ruleAppsToInclude.Split('|').Contains(ruleApp.Name))
-                        return;
-
-                    TriggerPipeline(ruleApp);
+                        if (IsRuleAppConfiguredToTriggerPipeline(ruleApp.Name))
+                            TriggerPipeline(ruleApp);
+                    }
                 }
             }
             catch(Exception ex)
             {
                 Console.WriteLine("Error in RuleApplicationParameterInspector following checkin: " + ex.Message);
             }
+        }
+
+        #region Helpers
+        private bool IsRuleAppConfiguredToTriggerPipeline(string ruleAppName)
+        {
+            string ruleAppsToInclude = ConfigurationManager.AppSettings["AutoPromoteRuleAppsNamed"];
+
+            if (string.IsNullOrEmpty(ruleAppsToInclude))
+                return true;
+
+            if (!string.IsNullOrEmpty(ruleAppName) && ruleAppsToInclude.Split('|').Contains(ruleAppName))
+                return true;
+
+            return false;
+        }
+        private bool IsLabelTriggerConfigured()
+        {
+            string labelsToInclude = ConfigurationManager.AppSettings["AutoPromoteRuleAppsLabeled"];
+            return !string.IsNullOrEmpty(labelsToInclude);
+        }
+        private bool IsLabelConfiguredToTriggerPipeline(string label)
+        {
+            string labelsToInclude = ConfigurationManager.AppSettings["AutoPromoteRuleAppsLabeled"];
+
+            if (string.IsNullOrEmpty(labelsToInclude))
+                return true;
+
+            if (!string.IsNullOrEmpty(label) && labelsToInclude.Split('|').Contains(label))
+                return true;
+
+            return false;
         }
         private void TriggerPipeline(RuleAppData ruleApp)
         {
@@ -72,6 +100,7 @@ namespace CheckinRequestListener
             string authToken = ConfigurationManager.AppSettings["AzureDevOpsAuthToken"];
             AzureDevOpsApiHelper.QueuePipelineBuild(org, project, pipelineId, authToken);
         }
+        #endregion
     }
     public class RuleAppDataCache
     {
