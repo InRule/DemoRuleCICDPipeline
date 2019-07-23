@@ -1,6 +1,10 @@
 ## Demo Rule CI/CD Pipeline
 This repo demonstrates two different CI/CD flows handling Rule Applications.
 
+It is published in correlation with a two-post blog series:
+Part 1: https://www.inrule.com/resources/blog/integrating-rule-apps-into-your-ci-cd-pipeline-part-i
+Part 2: Not yet published
+
 ### File-Based IrJS : Test and Build upon GitHub Checkin
 This pipeline is a demonstration of file-based Rule Apps that use GitHub as the repository for both Rule Apps and Test Scenarios, allowing them to be tested and compiled using the irDistribution service upon checkin.
 
