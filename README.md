@@ -5,13 +5,13 @@ It is published in correlation with a two-post blog series:
 - Part 1: [GitHub Push Triggered, File-Sourced Rule App, irJS Compiling Pipeline](https://www.inrule.com/resources/blog/integrating-rule-apps-into-your-ci-cd-pipeline-part-i) 
 - Part 2: [irCatalog Check-in Triggered, Catalog-Sourced Rule App, Promoting Pipeline](https://www.inrule.com/resources/blog/integrating-rule-apps-into-your-ci-cd-pipeline-part-ii)
 
-### File-Based IrJS : Test and Build upon GitHub Checkin
+### File-Based InRule for JavaScript : Test and Build upon GitHub Checkin
 This pipeline is a demonstration of file-based Rule Apps that use GitHub as the repository for both Rule Apps and Test Scenarios, allowing them to be tested and compiled using the irDistribution service upon checkin.
 
 1. A Rule App being checked into GitHub triggers the pipeline to execute.
 2. The Rule App is pulled from GitHub and run against all Test Scenarios that exist in the same folder.
 3. If all test scenarios pass, the Rule App is compiled via the irDistribution Service into a .js file.
-4. The compiled js file is published as a build artifact.
+4. The compiled .js file is published as a build artifact.
 
 ##### Requirements
 - The appropriate InRuleLicense.xml file is saved in the Library Secure File store
